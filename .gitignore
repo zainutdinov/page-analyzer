@@ -1,0 +1,12 @@
+*.egg-info
+__pycache__
+dist/
+*.pyc
+.venv/
+.coverage
+coverage.xml
+.pytest_cache/
+.DS_Store
+demo.cast
+page_analyzer/__pycache__/
+.env
