@@ -31,9 +31,9 @@ class UrlRepository:
     def create_url(self, url, cursor=None):
         date = datetime.date.today()
         cursor.execute("INSERT INTO urls (name, created_at) "
-                       "VALUES (%s, %s) RETURNING id", (url, date))
-        id = cursor.fetchone()[0]
-        return id
+                       "VALUES (%s, %s) RETURNING id, name, created_at", (url, date))
+        url_data = cursor.fetchone()
+        return url_data
 
     @execute_database
     def get_url_id(self, url, cursor=None):

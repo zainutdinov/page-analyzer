@@ -34,9 +34,9 @@ def post_url():
     if url_id:
         flash('Страница уже существует', 'warning')
         return redirect(url_for('get_urls_checks_list', id=url_id))
-    url_data_id = database_exec.create_url(normalized_url)
+    url_data = database_exec.create_url(normalized_url)
     flash('Страница успешно добавлена', 'success')
-    return redirect(url_for('get_urls_checks_list', id=url_data_id))
+    return redirect(url_for('get_urls_checks_list', id=url_data.id))
 
 
 @app.get('/urls')

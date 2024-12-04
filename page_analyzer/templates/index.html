@@ -20,7 +20,15 @@
   </header>
 
     {% block notifications %}
-    <div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
+    {% if messages %}
+    <div>
+      <ul class="list-group">
+        {% for category, message in messages %}
+        <li class="list-group-item list-group-item-{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
     {% endblock %}
 
   <main class="flex-grow-1">
