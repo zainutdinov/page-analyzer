@@ -54,5 +54,5 @@ class UrlRepository:
         cursor.execute("SELECT * FROM urls WHERE id=%s", (url_id,))
         url_data = cursor.fetchone()
         if not url_data:
-            return False
+            return None
         return url_data

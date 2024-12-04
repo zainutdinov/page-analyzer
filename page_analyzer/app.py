@@ -14,6 +14,7 @@ app = Flask(__name__)
 
 database_exec = UrlRepository()
 
+
 @app.route('/')
 def home():
     messages = get_flashed_messages(with_categories=True)
@@ -49,7 +50,7 @@ def get_urls_list():
 @app.route('/urls/<int:id>', methods=['GET'])
 def get_urls_checks_list(id):
     messages = get_flashed_messages(with_categories=True)
-    url = database_exec.get_url_from_urls_list(id)
-    if not url:
-        return render_template('urls_id_error.html')
-    return render_template('url_id.html', messages=messages, url=url)
+    url_data = database_exec.get_url_from_urls_list(id)
+    if not url_data:
+        return render_template('url_id_error.html')
+    return render_template('url_id.html', messages=messages, url=url_data)
