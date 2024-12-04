@@ -1,5 +1,5 @@
-from flask import (Flask, render_template, request,
-                   flash, get_flashed_messages)
+from flask import (Flask, render_template, request, redirect,
+                   url_for, flash, get_flashed_messages)
 from validators import url as validate_url
 from dotenv import load_dotenv
 import os
@@ -33,19 +33,10 @@ def post_url():
     url_id = database_exec.get_url_id(normalized_url)
     if url_id:
         flash('Страница уже существует', 'warning')
-        messages = get_flashed_messages(with_categories=True)
-        url_data = database_exec.get_url_from_urls_list(url_id)
-        return render_template('url_id.html', messages=messages,
-                               url=url_data), 200
-    url_data = database_exec.create_url(normalized_url)
-    if not url_data:
-        flash('Ошибка при добавлении URL', 'danger')
-        messages = get_flashed_messages(with_categories=True)
-        return render_template('start_page.html', messages=messages), 500
+        return redirect(url_for('get_urls_checks_list', id=url_id))
+    url_data_id = database_exec.create_url(normalized_url)
     flash('Страница успешно добавлена', 'success')
-    messages = get_flashed_messages(with_categories=True)
-    return render_template('url_id.html', messages=messages,
-                           url=url_data), 201
+    return redirect(url_for('get_urls_checks_list', id=url_data_id))
 
 
 @app.get('/urls')
