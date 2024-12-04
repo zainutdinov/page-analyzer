@@ -4,7 +4,7 @@ from validators import url as validate_url
 from dotenv import load_dotenv
 import os
 from urllib.parse import urlparse
-from page_analyzer import database
+from page_analyzer.database import UrlRepository
 
 load_dotenv()
 app = Flask(__name__)
@@ -12,6 +12,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 app = Flask(__name__)
 
+database_exec = UrlRepository()
 
 @app.route('/')
 def home():
@@ -28,11 +29,11 @@ def post_url():
         flash('Некорректный URL', 'danger')
         messages = get_flashed_messages(with_categories=True)
         return render_template('start_page.html', messages=messages), 422
-    url_id = database.get_url_id(normalized_url)
+    url_id = database_exec.get_url_id(normalized_url)
     if url_id:
         flash('Страница уже существует', 'warning')
         return redirect(url_for('get_urls_checks_list', id=url_id))
-    url = database.create_url(normalized_url)
+    url = database_exec.create_url(normalized_url)
     flash('Страница успешно добавлена', 'success')
     return redirect(url_for('get_urls_checks_list', id=url.id))
 
@@ -40,7 +41,7 @@ def post_url():
 @app.get('/urls')
 def get_urls_list():
     messages = get_flashed_messages(with_categories=True)
-    all_urls = database.get_urls_list()
+    all_urls = database_exec.get_all_urls_list()
     return render_template('urls_list.html', messages=messages,
                            urls=all_urls)
 
@@ -48,7 +49,7 @@ def get_urls_list():
 @app.route('/urls/<int:id>', methods=['GET'])
 def get_urls_checks_list(id):
     messages = get_flashed_messages(with_categories=True)
-    url = database.get_url_from_urls_list(id)
+    url = database_exec.get_url_from_urls_list(id)
     if not url:
         return render_template('urls_id_error.html')
     return render_template('url_id.html', messages=messages, url=url)

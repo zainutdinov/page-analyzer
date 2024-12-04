@@ -44,7 +44,7 @@ class UrlRepository:
         return url_id.id
 
     @execute_database
-    def get_urls_list(self, cursor=None):
+    def get_all_urls_list(self, cursor=None):
         cursor.execute("SELECT * FROM urls")
         urls = cursor.fetchall()
         return urls
