@@ -8,7 +8,7 @@ from page_analyzer.database import UrlRepository
 
 load_dotenv()
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.secret_key = os.getenv('SECRET_KEY')
 
 app = Flask(__name__)
 
