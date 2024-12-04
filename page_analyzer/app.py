@@ -1,7 +1,10 @@
-from flask import Flask, render_template
+from flask import (Flask, render_template, request, redirect,
+                   url_for, flash, get_flashed_messages)
+from validators import url as validate_url
 from dotenv import load_dotenv
 import os
-
+from urllib.parse import urlparse
+from page_analyzer import database
 
 load_dotenv()
 app = Flask(__name__)
@@ -12,4 +15,46 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    messages = get_flashed_messages(with_categories=True)
+    return render_template('start_page.html', messages=messages)
+
+
+@app.post('/urls')
+def post_url():
+    url = request.form.get('url')
+    parsed_url = urlparse(url)
+    normalized_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
+    
+    if not validate_url(normalized_url):
+        flash('Некорректный URL', 'danger')
+        messages = get_flashed_messages(with_categories=True)
+        return render_template('start_page.html', messages=messages), 422
+    
+    url_id = database.get_url_id(normalized_url)
+    
+    if url_id:
+        flash('Страница уже существует', 'warning')
+        return redirect(url_for('get_urls_checks_list', id=url_id))
+   
+    url = database.create_url(normalized_url)
+    flash('Страница успешно добавлена', 'success')
+    return redirect(url_for('get_urls_checks_list', id=url.id))
+
+
+@app.get('/urls')
+def get_urls_list():
+    messages = get_flashed_messages(with_categories=True)
+    all_urls = database.get_urls_list()
+    return render_template('urls_list.html', messages=messages,
+                           urls=all_urls)
+
+
+@app.route('/urls/<int:id>', methods=['GET'])
+def get_urls_checks_list(id):
+    messages = get_flashed_messages(with_categories=True)
+    url = database.get_url_from_urls_list(id)
+    
+    if not url:
+        return render_template('urls_id_error.html')
+    
+    return render_template('url_id.html', messages=messages, url=url)
