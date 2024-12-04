@@ -1,5 +1,5 @@
-from flask import (Flask, render_template, request, redirect,
-                   url_for, flash, get_flashed_messages)
+from flask import (Flask, render_template, request,
+                   flash, get_flashed_messages)
 from validators import url as validate_url
 from dotenv import load_dotenv
 import os
@@ -33,10 +33,19 @@ def post_url():
     url_id = database_exec.get_url_id(normalized_url)
     if url_id:
         flash('Страница уже существует', 'warning')
-        return redirect(url_for('get_urls_checks_list', id=url_id))
+        messages = get_flashed_messages(with_categories=True)
+        url_data = database_exec.get_url_from_urls_list(url_id)
+        return render_template('url_id.html', messages=messages,
+                               url=url_data), 200
     url_data = database_exec.create_url(normalized_url)
+    if not url_data:
+        flash('Ошибка при добавлении URL', 'danger')
+        messages = get_flashed_messages(with_categories=True)
+        return render_template('start_page.html', messages=messages), 500
     flash('Страница успешно добавлена', 'success')
-    return redirect(url_for('get_urls_checks_list', id=url_data.id))
+    messages = get_flashed_messages(with_categories=True)
+    return render_template('url_id.html', messages=messages,
+                           url=url_data), 201
 
 
 @app.get('/urls')
@@ -44,7 +53,7 @@ def get_urls_list():
     messages = get_flashed_messages(with_categories=True)
     all_urls = database_exec.get_all_urls_list()
     return render_template('urls_list.html', messages=messages,
-                           urls=all_urls)
+                           urls=all_urls), 200
 
 
 @app.route('/urls/<int:id>', methods=['GET'])
@@ -52,5 +61,5 @@ def get_urls_checks_list(id):
     messages = get_flashed_messages(with_categories=True)
     url_data = database_exec.get_url_from_urls_list(id)
     if not url_data:
-        return render_template('url_id_error.html')
-    return render_template('url_id.html', messages=messages, url=url_data)
+        return render_template('url_id_error.html'), 200
+    return render_template('url_id.html', messages=messages, url=url_data), 200
