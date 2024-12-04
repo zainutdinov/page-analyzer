@@ -10,8 +10,6 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 
-app = Flask(__name__)
-
 database_exec = UrlRepository()
 
 
