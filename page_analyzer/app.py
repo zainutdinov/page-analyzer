@@ -17,9 +17,8 @@ from validators import url as validate_url
 
 from page_analyzer.database import UrlRepository
 
-load_dotenv()
-
 app = Flask(__name__)
+load_dotenv()
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 database_exec = UrlRepository()

@@ -10,3 +10,4 @@ coverage.xml
 demo.cast
 page_analyzer/__pycache__/
 .env
+.ruff_cache
