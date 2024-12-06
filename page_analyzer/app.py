@@ -1,12 +1,12 @@
-from flask import (Flask, render_template, request, redirect,
-                   url_for, flash, get_flashed_messages)
-from validators import url as validate_url
-from dotenv import load_dotenv
 import os
 from urllib.parse import urlparse
-from page_analyzer.database import UrlRepository
-import requests
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from flask import (Flask, flash, get_flashed_messages, redirect,
+                   render_template, request, url_for)
+import requests
+from validators import url as validate_url
+from page_analyzer.database import UrlRepository
 
 load_dotenv()
 app = Flask(__name__)
