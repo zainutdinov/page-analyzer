@@ -65,12 +65,15 @@ class UrlRepository:
         return url_data
 
     @execute_database
-    def create_check(self, url_id, response_code, cursor=None):
+    def create_check(self, url_id, response_code, h1, title,
+                     description, cursor=None):
         date = datetime.date.today()
         cursor.execute("INSERT INTO urls_checks "
-                       "(url_id, response_code, created_at) "
-                       "VALUES (%s, %s, %s) RETURNING id, url_id, created_at",
-                       (url_id, response_code, date))
+                       "(url_id, response_code, h1, title, "
+                       "description, created_at) "
+                       "VALUES (%s, %s, %s, %s, %s, %s) "
+                       "RETURNING id, url_id, created_at",
+                       (url_id, response_code, h1, title, description, date))
         url_data = cursor.fetchone()
         return url_data
 

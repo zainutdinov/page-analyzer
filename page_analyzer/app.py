@@ -6,6 +6,7 @@ import os
 from urllib.parse import urlparse
 from page_analyzer.database import UrlRepository
 import requests
+from bs4 import BeautifulSoup
 
 load_dotenv()
 app = Flask(__name__)
@@ -20,7 +21,7 @@ def home():
     return render_template('start_page.html', messages=messages)
 
 
-@app.post('/urls')
+@app.route('/urls', methods=['POST'])
 def post_url():
     url = request.form.get('url')
     parsed_url = urlparse(url)
@@ -38,7 +39,7 @@ def post_url():
     return redirect(url_for('get_urls_checks_list', id=url_data.id))
 
 
-@app.get('/urls')
+@app.route('/urls', methods=['GET'])
 def get_urls_list():
     messages = get_flashed_messages(with_categories=True)
     all_urls = database_exec.get_all_urls_list()
@@ -68,7 +69,16 @@ def post_check_url(id):
         flash('Произошла ошибка при проверке', 'danger')
         return redirect(url_for('get_urls_checks_list', id=id, code=400))
     response_code = response.status_code
-    url_data = database_exec.create_check(id, response_code)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    title_tag = soup.find('title')
+    title = title_tag.get_text(strip=True) if title_tag else None
+    h1_tag = soup.find('h1')
+    h1 = h1_tag.get_text(strip=True) if h1_tag else None
+    description_tag = soup.find("meta", attrs={"name": "description"})
+    description = (description_tag["content"] if description_tag
+                   and "content" in description_tag.attrs else None)
+    url_data = database_exec.create_check(id, response_code,
+                                          h1, title, description)
     if url_data:
         flash('Страница успешно проверена', 'success')
         return redirect(url_for('get_urls_checks_list', id=url_data.url_id))
