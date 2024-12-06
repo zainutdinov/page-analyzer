@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 from urllib.parse import urlparse
 from page_analyzer.database import UrlRepository
+import requests
 
 load_dotenv()
 app = Flask(__name__)
@@ -58,7 +59,16 @@ def get_urls_checks_list(id):
 
 @app.route('/urls/<int:id>/checks', methods=['POST'])
 def post_check_url(id):
-    url_data = database_exec.create_check(id)
+    url_data = database_exec.get_url_from_urls_list(id)
+    url = url_data.name
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+    except requests.exceptions.RequestException:
+        flash('Произошла ошибка при проверке', 'danger')
+        return redirect(url_for('get_urls_checks_list', id=id, code=400))
+    response_code = response.status_code
+    url_data = database_exec.create_check(id, response_code)
     if url_data:
         flash('Страница успешно проверена', 'success')
         return redirect(url_for('get_urls_checks_list', id=url_data.url_id))
