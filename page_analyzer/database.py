@@ -46,13 +46,31 @@ class UrlRepository:
 
     @execute_database
     def get_all_urls_list(self, cursor=None):
-        cursor.execute("SELECT * FROM urls")
+        cursor.execute("SELECT * FROM urls ORDER BY id DESC")
         urls = cursor.fetchall()
         return urls
 
     @execute_database
     def get_url_from_urls_list(self, url_id, cursor=None):
         cursor.execute("SELECT * FROM urls WHERE id=%s", (url_id,))
+        url_data = cursor.fetchone()
+        if not url_data:
+            return None
+        return url_data
+
+    @execute_database
+    def create_check(self, url_id, cursor=None):
+        date = datetime.date.today()
+        cursor.execute("INSERT INTO urls_checks (url_id, created_at) "
+                       "VALUES (%s, %s) RETURNING id, url_id, created_at",
+                       (url_id, date))
+        url_data = cursor.fetchone()
+        return url_data
+
+    @execute_database
+    def get_checks_from_urls_checks_list(self, url_id, cursor=None):
+        cursor.execute("SELECT * FROM urls_checks WHERE url_id=%s "
+                       "ORDER BY id DESC", (url_id,))
         url_data = cursor.fetchone()
         if not url_data:
             return None

@@ -51,4 +51,14 @@ def get_urls_checks_list(id):
     url_data = database_exec.get_url_from_urls_list(id)
     if not url_data:
         return render_template('url_id_error.html'), 200
-    return render_template('url_id.html', messages=messages, url=url_data), 200
+    checks_data = database_exec.get_checks_from_urls_checks_list(id)
+    return render_template('url_id.html', messages=messages,
+                           url=url_data, check=checks_data), 200
+
+
+@app.route('/urls/<int:id>/checks', methods=['POST'])
+def post_check_url(id):
+    url_data = database_exec.create_check(id)
+    if url_data:
+        flash('Страница успешно проверена', 'success')
+        return redirect(url_for('get_urls_checks_list', id=url_data.url_id))
