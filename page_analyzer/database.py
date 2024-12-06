@@ -71,7 +71,7 @@ class UrlRepository:
     def get_checks_from_urls_checks_list(self, url_id, cursor=None):
         cursor.execute("SELECT * FROM urls_checks WHERE url_id=%s "
                        "ORDER BY id DESC", (url_id,))
-        url_data = cursor.fetchone()
+        url_data = cursor.fetchall()
         if not url_data:
             return None
         return url_data
