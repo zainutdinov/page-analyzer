@@ -1,6 +1,7 @@
 import os
 from urllib.parse import urlparse
 
+import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from flask import (
@@ -12,7 +13,6 @@ from flask import (
     request,
     url_for,
 )
-import requests
 from validators import url as validate_url
 
 from page_analyzer.database import UrlRepository
