@@ -1,9 +1,9 @@
 import datetime
 import os
+
 from dotenv import load_dotenv
 import psycopg2
 from psycopg2.extras import NamedTupleCursor
-
 
 load_dotenv()
 

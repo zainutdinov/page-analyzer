@@ -1,14 +1,24 @@
 import os
 from urllib.parse import urlparse
+
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-from flask import (Flask, flash, get_flashed_messages, redirect,
-                   render_template, request, url_for)
+from flask import (
+    Flask,
+    flash,
+    get_flashed_messages,
+    redirect,
+    render_template,
+    request,
+    url_for
+)
 import requests
 from validators import url as validate_url
+
 from page_analyzer.database import UrlRepository
 
 load_dotenv()
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
