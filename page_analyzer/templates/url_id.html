@@ -41,7 +41,7 @@
       </tr>
     </thead>
     <tbody>
-    {% for check in checks_list %}
+    {% for check in checks %}
     <tr>
       <td>{{ check.id }}</td>
       <td>{{ check.response_code if check.response_code else ' ' }}</td>

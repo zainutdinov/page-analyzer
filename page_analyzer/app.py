@@ -53,7 +53,7 @@ def get_urls_checks_list(id):
         return render_template('url_id_error.html'), 200
     checks_data = database_exec.get_checks_from_urls_checks_list(id)
     return render_template('url_id.html', messages=messages,
-                           url=url_data, check=checks_data), 200
+                           url=url_data, checks=checks_data), 200
 
 
 @app.route('/urls/<int:id>/checks', methods=['POST'])
