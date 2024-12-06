@@ -46,7 +46,7 @@ class UrlRepository:
 
     @execute_database
     def get_all_urls_list(self, cursor=None):
-        cursor.execute("SELECT u.* "
+        cursor.execute("SELECT u.*, "
                        "(SELECT c.response_code "
                        "FROM urls_checks AS c "
                        "WHERE c.url_id = u.id "
