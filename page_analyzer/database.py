@@ -46,7 +46,13 @@ class UrlRepository:
 
     @execute_database
     def get_all_urls_list(self, cursor=None):
-        cursor.execute("SELECT * FROM urls ORDER BY id DESC")
+        cursor.execute("SELECT u.* "
+                       "(SELECT c.response_code "
+                       "FROM urls_checks AS c "
+                       "WHERE c.url_id = u.id "
+                       "ORDER BY c.id DESC LIMIT 1) "
+                       "AS response_code "
+                       "FROM urls AS u ORDER BY id DESC")
         urls = cursor.fetchall()
         return urls
 
