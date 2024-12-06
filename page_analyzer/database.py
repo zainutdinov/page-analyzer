@@ -41,7 +41,7 @@ class UrlRepository:
 
     @execute_database
     def get_url_id(self, url, cursor=None):
-        cursor.execute("SELECT * FROM urls WHERE name=%s", (url,))
+        cursor.execute("SELECT * FROM urls WHERE name=%s", (url))
         url_id = cursor.fetchone()
         if not url_id:
             return None
@@ -63,14 +63,14 @@ class UrlRepository:
 
     @execute_database
     def get_url_from_urls_list(self, url_id, cursor=None):
-        cursor.execute("SELECT * FROM urls WHERE id=%s", (url_id,))
+        cursor.execute("SELECT * FROM urls WHERE id=%s", (url_id))
         url_data = cursor.fetchone()
         if not url_data:
             return None
         return url_data
 
     @execute_database
-    def create_check(self, url_id, response_code, h1, title, description, cursor=None):
+    def create_check(self, url_id, resp_code, h1, title, descrip, cursor=None):
         date = datetime.date.today()
         cursor.execute(
             "INSERT INTO urls_checks "
@@ -78,7 +78,7 @@ class UrlRepository:
             "description, created_at) "
             "VALUES (%s, %s, %s, %s, %s, %s) "
             "RETURNING id, url_id, created_at",
-            (url_id, response_code, h1, title, description, date),
+            (url_id, resp_code, h1, title, descrip, date),
         )
         url_data = cursor.fetchone()
         return url_data
@@ -86,7 +86,9 @@ class UrlRepository:
     @execute_database
     def get_checks_from_urls_checks_list(self, url_id, cursor=None):
         cursor.execute(
-            "SELECT * FROM urls_checks WHERE url_id=%s " "ORDER BY id DESC", (url_id,)
+            "SELECT * FROM urls_checks WHERE url_id=%s "
+            "ORDER BY id DESC",
+            (url_id)
         )
         url_data = cursor.fetchall()
         return url_data

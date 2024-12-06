@@ -17,8 +17,8 @@ from validators import url as validate_url
 
 from page_analyzer.database import UrlRepository
 
-app = Flask(__name__)
 load_dotenv()
+app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 database_exec = UrlRepository()
@@ -52,7 +52,7 @@ def post_url():
 def get_urls_list():
     messages = get_flashed_messages(with_categories=True)
     all_urls = database_exec.get_all_urls_list()
-    return render_template("urls_list.html", messages=messages, urls=all_urls), 200
+    return render_template("urls_list.html", messages=messages, urls=all_urls)
 
 
 @app.route("/urls/<int:id>", methods=["GET"])
@@ -77,19 +77,19 @@ def post_check_url(id):
     except requests.exceptions.RequestException:
         flash("Произошла ошибка при проверке", "danger")
         return redirect(url_for("get_urls_checks_list", id=id, code=400))
-    response_code = response.status_code
+    resp_code = response.status_code
     soup = BeautifulSoup(response.text, "html.parser")
     title_tag = soup.find("title")
     title = title_tag.get_text(strip=True) if title_tag else None
     h1_tag = soup.find("h1")
     h1 = h1_tag.get_text(strip=True) if h1_tag else None
     description_tag = soup.find("meta", attrs={"name": "description"})
-    description = (
+    descrip = (
         description_tag["content"]
         if description_tag and "content" in description_tag.attrs
         else None
     )
-    url_data = database_exec.create_check(id, response_code, h1, title, description)
+    url_data = database_exec.create_check(id, resp_code, h1, title, descrip)
     if url_data:
         flash("Страница успешно проверена", "success")
         return redirect(url_for("get_urls_checks_list", id=url_data.url_id))
