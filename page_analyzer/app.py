@@ -32,7 +32,7 @@ def show_homepage():
 def post_url():
     url = request.form.get("url")
     normalized_url = validate_and_normalize_url(url)
-    if not url:
+    if not normalized_url:
         flash("Некорректный URL", "danger")
         messages = get_flashed_messages(with_categories=True)
         return render_template("start_page.html", messages=messages), 422
