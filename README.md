@@ -20,14 +20,9 @@
 
 ## Требования
 
-- python 3.11.10
-- poetry ^1.8.3
-- flask ^3.1.0
-- python-dotenv ^1.0.1
-- psycopg2-binary ^2.9.10
-- validators ^0.34.0
-- requests ^2.32.3
-- beautifulsoup4 ^4.12.3
+- Python 3.11.10
+- Poetry ^1.8.3
+- PostgreSQL
 
 ## Инструкция по установке
 
@@ -37,19 +32,25 @@
 git clone https://github.com/zainutdinov/python-project-83
 ```
 
-> Далее выполните установку пакета:
-
-```bash
-cd python-project-83
-```
-
-```bash
-poetry build
-python3 -m pip install --user dist/*.whl
-```
-
 > Создайте файл .env в корневой директории проекта. Добавьте в него две переменные: DATABASE_URL и SECRET_KEY.
 
 - SECRET_KEY может быть сгенерирован или введён вручную.
 - DATABASE_URL должен иметь следующий формат: {provider}://{user}:{password}@{host}:{port}/{db}
 
+> Сделайте скрипт build.sh исполняемым:
+
+- Перейдите в директорию проекта
+```bash
+cd python-project-83
+```
+
+- Далее сделайте скрипт исполняемым
+```bash
+chmod +x ./build.sh
+```
+
+> Выполните установку пакета и настройте базу данных:
+
+```bash
+make build
+```

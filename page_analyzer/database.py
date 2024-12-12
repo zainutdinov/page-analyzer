@@ -48,7 +48,7 @@ class UrlRepository:
         return url_id.id
 
     @execute_database
-    def get_all_urls_list(self, cursor=None):
+    def get_all_urls(self, cursor=None):
         cursor.execute(
             "SELECT u.*, "
             "(SELECT c.response_code "
@@ -62,7 +62,7 @@ class UrlRepository:
         return urls
 
     @execute_database
-    def get_url_from_urls_list(self, url_id, cursor=None):
+    def get_url(self, url_id, cursor=None):
         cursor.execute("SELECT * FROM urls WHERE id=%s", (url_id,))
         url_data = cursor.fetchone()
         if not url_data:
@@ -84,7 +84,7 @@ class UrlRepository:
         return url_data
 
     @execute_database
-    def get_checks_from_urls_checks_list(self, url_id, cursor=None):
+    def get_checks(self, url_id, cursor=None):
         cursor.execute(
             "SELECT * FROM urls_checks WHERE url_id=%s "
             "ORDER BY id DESC",
