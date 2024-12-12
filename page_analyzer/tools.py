@@ -1,8 +1,7 @@
 from urllib.parse import urlparse
 
-from validators import url as validate_url
-
 from bs4 import BeautifulSoup
+from validators import url as validate_url
 
 
 def parse_html(response):

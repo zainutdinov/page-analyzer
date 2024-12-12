@@ -13,8 +13,7 @@ from flask import (
 )
 
 from page_analyzer.database import UrlRepository
-from page_analyzer.tools import parse_html
-from page_analyzer.tools import validate_and_normalize_url
+from page_analyzer.tools import parse_html, validate_and_normalize_url
 
 load_dotenv()
 app = Flask(__name__)
@@ -33,7 +32,7 @@ def show_homepage():
 def post_url():
     url = request.form.get("url")
     normalized_url = validate_and_normalize_url(url)
-    if url == None:
+    if not url:
         flash("Некорректный URL", "danger")
         messages = get_flashed_messages(with_categories=True)
         return render_template("start_page.html", messages=messages), 422
